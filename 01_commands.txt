@@ -1,0 +1,14 @@
+python save_embeddings.py
+python app.py
+
+http://127.0.0.1:5000/
+
+GIT setup
+cd /h/python/text_processing
+git init
+git remote add origin git@github.com:thamit1/text_processing.git
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
+
