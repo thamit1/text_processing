@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Offline Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+        }
+        .chatbox {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chat with the Offline Bot</h1>
+        <div class="chatbox" id="chatbox"></div>
+        <input type="text" class="input-box" id="user-input" onkeypress="sendMessage(event)" placeholder="Type your message here...">
+    </div>
+
+    <script>
+        function sendMessage(event) {
+            if (event.key === 'Enter') {
+                var userInput = document.getElementById('user-input').value;
+                var chatbox = document.getElementById('chatbox');
+                
+                // Add user message to chatbox
+                var userMessage = document.createElement('div');
+                userMessage.innerHTML = '<b>User:</b> ' + userInput;
+                chatbox.appendChild(userMessage);
+
+                // Send user input to Flask server
+                fetch('/get', {
+                    method: 'POST',
+                    body: new URLSearchParams('msg=' + userInput)
+                }).then(response => response.text()).then(data => {
+                    var botMessage = document.createElement('div');
+                    botMessage.innerHTML = '<b>Bot:</b> ' + data;
+                    chatbox.appendChild(botMessage);
+                });
+
+                // Clear user input
+                document.getElementById('user-input').value = '';
+            }
+        }
+    </script>
+</body>
+</html>

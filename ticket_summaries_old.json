@@ -1,0 +1,22 @@
+[
+    {
+        "description": "As a user, I want to be able to reset my password so that I can regain access to my account if I forget my credentials.",
+        "summary": "User wants a password reset feature to regain access to their account."
+    },
+    {
+        "description": "Create a landing page that displays the latest news articles and updates for users when they first log in.",
+        "summary": "Develop a landing page for displaying the latest news and updates."
+    },
+    {
+        "description": "Implement a search functionality that allows users to search for products by name, category, or brand.",
+        "summary": "Add search functionality for products based on name, category, or brand."
+    },
+    {
+        "description": "As a project manager, I need a dashboard that shows the current progress of all ongoing projects.",
+        "summary": "Project manager requires a dashboard to view progress of ongoing projects."
+    },
+    {
+        "description": "Improve the performance of the database queries to reduce load times for users accessing the application.",
+        "summary": "Optimize database queries to enhance application load times."
+    }
+]
