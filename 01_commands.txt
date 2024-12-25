@@ -13,6 +13,8 @@ python app.py
 
 http://127.0.0.1:5000/
 
+Used https://dillinger.io/ to generate MD files
+
 GIT setup
 ---------
 cd /h/python/text_processing
