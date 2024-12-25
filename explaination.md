@@ -200,3 +200,34 @@ if __name__ == '__main__':
 ```
 
 - **Run Flask App**: Start the Flask application in debug mode.
+
+
+### Why do we need to incorporate both, json and embeddings?
+## 1. Loading `ticket_summaries.json`:
+```python
+with open('ticket_summaries.json', 'r') as f:
+    ticket_data_with_summaries = json.load(f)
+```
+- **Purpose**: This code reads the `ticket_summaries.json` file and loads the JSON data into a Python list of dictionaries. Each dictionary contains descriptions and summaries of tickets.
+- **Usage**: The loaded data is used to provide context and relevant information about the tickets. This data can be used for tasks such as summarization, generating responses, and finding similarities.
+
+## 2. Loading `ticket_embeddings.npy`:
+```python
+stored_embeddings = np.load('ticket_embeddings.npy', allow_pickle=True)
+```
+- **Purpose**: This code reads the `ticket_embeddings.npy` file and loads the precomputed embeddings (numerical representations) of the ticket descriptions into a NumPy array.
+- **Usage**: The embeddings are used to efficiently compute similarities between user queries and stored ticket descriptions. This allows the application to find and return the most relevant ticket based on the query.
+
+## 3. Extracting `ticket_descriptions`:
+```python
+ticket_descriptions = [ticket['description'] for ticket in ticket_data_with_summaries]
+```
+- **Purpose**: This code extracts the descriptions from the loaded ticket data and stores them in a list.
+- **Usage**: While this step might seem redundant given the other data structures, it's useful for quickly accessing just the descriptions for tasks that might need them separately.
+
+## Summary of How They Work Together:
+1. **Context**: `ticket_data_with_summaries` provides the full context of each ticket, including descriptions and summaries.
+2. **Similarity Search**: `stored_embeddings` allows for efficient similarity searches to find tickets relevant to a user's query.
+3. **Description Access**: `ticket_descriptions` provides easy access to just the descriptions, which might be handy for certain operations.
+
+In summary, loading both the ticket summaries and embeddings allows your application to handle both the retrieval of context-rich information and the efficient computation of similarities, improving the overall functionality and user experience.
