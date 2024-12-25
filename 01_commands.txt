@@ -1,9 +1,20 @@
+Got the sample data from
+https://www.kaggle.com/datasets/iamsouvik/software-requirements-dataset?resource=download
+and copied the dataset to samples/requirements_nfr.txt
+
+to convert requirements_nfr.txt to json:
+python req_txt_to_json.py
+
+Generate embeddings of the json file:
 python save_embeddings.py
+
+Run the app:
 python app.py
 
 http://127.0.0.1:5000/
 
 GIT setup
+---------
 cd /h/python/text_processing
 git init
 git remote add origin git@github.com:thamit1/text_processing.git
