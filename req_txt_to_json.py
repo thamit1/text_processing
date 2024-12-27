@@ -11,7 +11,8 @@ def convert_to_json(file_path, output_path):
     # Initialize an empty list to store the JSON data
     json_data = []
     
-    for line in lines:
+    # Generate ticket numbers and store in json
+    for index, line in enumerate(lines):
         # Split each line into key and description parts
         parts = line.split(':', 1)
         if len(parts) == 2:
@@ -19,7 +20,8 @@ def convert_to_json(file_path, output_path):
             # Create a dictionary for each entry
             entry = {
                 "description": description.strip(),
-                "summary": description.strip()  # Summary is the same as description
+                "summary": description.strip(),  # Summary is same as description
+                "ticketNo": f"QBC-{index + 1:04d}"  # Generate ticket number
             }
             json_data.append(entry)
     
