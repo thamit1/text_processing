@@ -1,3 +1,5 @@
+This explanation is stale because we removed GPT based summary to keep it simple.
+But it is a good learning to understand how an offline GPT model could work.
 ### 1. Imports and Configuration
 
 ```python
