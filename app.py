@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 import logging
-# import time
+import time
 # import torch
-# from transformers import BartTokenizer, BartForConditionalGeneration, GPT2Tokenizer, GPT2LMHeadModel
+from transformers import BartTokenizer, BartForConditionalGeneration, GPT2Tokenizer, GPT2LMHeadModel
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -19,16 +19,16 @@ app = Flask(__name__)
 cache = {}
 
 # Load models
-# summarization_model_name = 'facebook/bart-large-cnn'
-# summarization_tokenizer = BartTokenizer.from_pretrained(summarization_model_name, cache_dir='./model_cache')
-# summarization_model = BartForConditionalGeneration.from_pretrained(summarization_model_name, cache_dir='./model_cache')
+summarization_model_name = 'facebook/bart-large-cnn'
+summarization_tokenizer = BartTokenizer.from_pretrained(summarization_model_name, cache_dir='./model_cache')
+summarization_model = BartForConditionalGeneration.from_pretrained(summarization_model_name, cache_dir='./model_cache')
 
-# response_model_name = 'gpt2'
-# response_tokenizer = GPT2Tokenizer.from_pretrained(response_model_name, cache_dir='./model_cache')
-# response_model = GPT2LMHeadModel.from_pretrained(response_model_name, cache_dir='./model_cache')
+response_model_name = 'gpt2'
+response_tokenizer = GPT2Tokenizer.from_pretrained(response_model_name, cache_dir='./model_cache')
+response_model = GPT2LMHeadModel.from_pretrained(response_model_name, cache_dir='./model_cache')
 
-# # Explicitly set the pad_token_id for GPT-2
-# response_tokenizer.pad_token_id = response_tokenizer.eos_token_id
+# Explicitly set the pad_token_id for GPT-2
+response_tokenizer.pad_token_id = response_tokenizer.eos_token_id
 
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder='./model_cache')
 
@@ -91,32 +91,36 @@ def handle_user_query(query):
 
         # Create a summarized response for all similar tickets
         responses = []
+        summary_group = ""
         for ticket, similarity in similar_tickets:
             summary = ticket['summary']
             ticket_no = ticket['ticketNo']
             responses.append(f"<b>{ticket_no} - </b> {summary} (Similarity: {similarity:.2f})")
+            summary_group += summary + " "
 
         response_text = "<br>".join(responses)
         # Generate a response without unrelated details
         response = f'<p style="color: blue; font-style: italic;">User query: {query}</p>{response_text}'
+        response += '<p style="color: blue; font-style: italic;"><b>Summarized response:</b><br>'
+        # response += f'{summarize_text(summary_group)} </p> <br>'
         return response
     except Exception as e:
         logging.error(f"Error in handle_user_query: {e}")
         return "An error occurred while processing your request."
 
-# def summarize_text(text, max_length=80, min_length=40):
-#     try:
-#         start_time = time.time()
-#         logging.info("Summarize function called")
-#         inputs = summarization_tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=512, truncation=True)
-#         summary_ids = summarization_model.generate(inputs, max_length=max_length, min_length=min_length, length_penalty=2.0, num_beams=4, early_stopping=True)
-#         summary = summarization_tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-#         end_time = time.time()
-#         logging.info(f"Summarize function completed in {end_time - start_time} seconds")
-#         return summary
-#     except Exception as e:
-#         logging.error(f"Error in summarize_text: {e}")
-#         return "An error occurred while summarizing the text."
+def summarize_text(text, max_length=150, min_length=40):
+    try:
+        start_time = time.time()
+        logging.info("Summarize function called")
+        inputs = summarization_tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=512, truncation=True)
+        summary_ids = summarization_model.generate(inputs, max_length=max_length, min_length=min_length, length_penalty=2.0, num_beams=4, early_stopping=True)
+        summary = summarization_tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+        end_time = time.time()
+        logging.info(f"Summarize function completed in {end_time - start_time} seconds")
+        return summary
+    except Exception as e:
+        logging.error(f"Error in summarize_text: {e}")
+        return "An error occurred while summarizing the text."
 
 if __name__ == '__main__':
     app.run(debug=True)
